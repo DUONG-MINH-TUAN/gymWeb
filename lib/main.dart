@@ -1,6 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
-void main() {
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // runApp(MyEnglishLearningApp());
   runApp(const MyApp());
 }
 
@@ -11,6 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -55,17 +68,82 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  late TextEditingController email;
+  late TextEditingController password;
+  late GoogleAuthProvider authProvider;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  void errorDialog() {}
+  void Googlelogin() async{ late UserCredential credential;
+    try {
+      if (kIsWeb) {
+        credential = await FirebaseAuth.instance.signInWithPopup(
+            authProvider);
+      }
+
+      else {
+
+      }
+
+      if(credential.user?.uid != null){
+        print('login successfully');
+      }
+    } catch (e){
+      print(e);
+    }
+  }
+
+  String validateInput(String? email, String password) {
+    if (email == null || email.isEmpty) {
+      return 'Please enter your email';
+    }
+    if (!RegExp(r'^[\w-.]+@([\w-]+.)+[\w-]{2,4}$').hasMatch(email)) {
+      return 'Please enter a valid email';
+    }
+    if (password.isEmpty) {
+      return "Password field is empty";
+    }
+    return 'Validated';
+  }
+
+  void logIn() async {
+    var isValidated = validateInput(email.text, password.text);
+    if (isValidated == 'Validated') {
+      try {
+        final credential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: email.text, password: password.text);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found' || e.code == 'invalid-email') {
+          print('No user found for that email.');
+        } else if (e.code == 'wrong-password') {
+          print('Wrong password provided for that user.');
+        } else {
+          print(e);
+        }
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(
+          seconds: 3,
+        ),
+        content: Text(isValidated),
+      ));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    authProvider = GoogleAuthProvider();
+    email = TextEditingController();
+    password = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    email.dispose();
+    password.dispose();
+    super.dispose();
   }
 
   @override
@@ -77,20 +155,10 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
           // children horizontally, and tries to be as tall as its parent.
@@ -106,33 +174,28 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
             Text(
               '--Login--',
               style: TextStyle(
-                  fontSize: 32,
-                  color: Colors.cyan[400],
-                  ),
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+                fontSize: 32,
+                color: Colors.cyan[400],
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 100,right:100),
-              child: TextField(
+              padding: const EdgeInsets.only(left: 100, right: 100),
+              child: TextFormField(
+                controller: email,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Username',
+                  hintText: 'Email',
                 ),
               ),
             ),
             SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(left: 100,right:100),
-              child: TextField(
+              padding: const EdgeInsets.only(left: 100, right: 100),
+              child: TextFormField(
+                controller: password,
                 obscureText: true,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -140,25 +203,32 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            Container(
-                width: 90,
-                height: 20,
-                child: ElevatedButton(
-                  onPressed: _incrementCounter,// login
-                  child: const Text('Login'),
+            SizedBox(height: 10),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: CircleBorder(), // Circular shape
+                elevation: 0, // No shadow, // Padding can be adjusted
+              ),
+                onPressed: Googlelogin, // login
+                child: Image.asset(
+                  'lib/icon/Google.png',
+                  width: 40,
+                  height: 40,
                 ),
-
-            )
+              ),
+              //login button
+            SizedBox(height: 10),
+            Container(
+              width: 120,
+              height: 120,
+              child: ElevatedButton(
+                onPressed: logIn, // login
+                child: const Text('Login'),
+              ),
+            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-
     );
   }
 }
