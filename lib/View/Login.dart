@@ -16,8 +16,22 @@ class _loginState extends State<loginPage> {
   late GoogleAuthProvider authProvider;
 
 
+  @override
+  void initState() {
+    super.initState();
+    authProvider = GoogleAuthProvider();
+    email = TextEditingController();
+    password = TextEditingController();
+  }
 
-  void Googlelogin() async {
+  @override
+  void dispose() {
+    email.dispose();
+    password.dispose();
+    super.dispose();
+  }
+
+  void googleLogin() async {
     late UserCredential credential;
     try {
       if (kIsWeb) {
@@ -71,20 +85,6 @@ class _loginState extends State<loginPage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    authProvider = GoogleAuthProvider();
-    email = TextEditingController();
-    password = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    email.dispose();
-    password.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +139,7 @@ class _loginState extends State<loginPage> {
                 shape: CircleBorder(), // Circular shape
                 elevation: 0, // No shadow, // Padding can be adjusted
               ),
-              onPressed: Googlelogin, // login
+              onPressed: googleLogin, // login
               child: Image.asset(
                 'lib/icon/Google.png',
                 width: 40,
