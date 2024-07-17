@@ -1,9 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:firebase_core/firebase_core.dart';
-import 'package:gym_web_new/View/SignUp.dart';
-import './View/Login.dart';
+import 'package:gymApps/View/signUp.dart';
+import 'package:gymApps/View/logIn.dart';
 import 'firebase_options.dart';
 
 
@@ -49,7 +47,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => loginPage(title: '',)),
+                  MaterialPageRoute(builder: (context) => logInPage(title: '',)),
                 );
               },
               icon: Icon(Icons.login)),

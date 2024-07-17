@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:firebase_auth/firebase_auth.dart';
 
 class signUpPage extends StatefulWidget {
   const signUpPage({super.key, required this.title});
@@ -18,10 +16,9 @@ class _signUpState extends State<signUpPage> {
   late TextEditingController email;
   late TextEditingController password;
 
-  // late GoogleAuthProvider authProvider;
-
   void signUp() async {
     var isValidated = validateInput(username.text, email.text, password.text);
+
     if (isValidated == 'Validated') {
       //thiếu phần thêm username vào database
       try {
