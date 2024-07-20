@@ -1,23 +1,38 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:firebase_auth/firebase_auth.dart';
-class loginPage extends StatefulWidget {
-  const loginPage({super.key, required this.title});
+import 'package:gymApps/constant/colours.dart';
+
+class logInPage extends StatefulWidget {
+  const logInPage({super.key, required this.title});
+
   final String title;
+
   @override
-  State<loginPage> createState() => _loginState();
+  State<logInPage> createState() => logInPageState();
 }
 
-class _loginState extends State<loginPage> {
+class logInPageState extends State<logInPage> {
   late TextEditingController email;
   late TextEditingController password;
   late GoogleAuthProvider authProvider;
 
+  @override
+  void initState() {
+    super.initState();
+    authProvider = GoogleAuthProvider();
+    email = TextEditingController();
+    password = TextEditingController();
+  }
 
+  @override
+  void dispose() {
+    email.dispose();
+    password.dispose();
+    super.dispose();
+  }
 
-  void Googlelogin() async {
+  void googleLogin() async {
     late UserCredential credential;
     try {
       if (kIsWeb) {
@@ -25,7 +40,7 @@ class _loginState extends State<loginPage> {
       } else {}
 
       if (credential.user?.uid != null) {
-        print('login successfully');
+        print('Login successfully');
       }
     } catch (e) {
       print(e);
@@ -33,16 +48,15 @@ class _loginState extends State<loginPage> {
   }
 
   String validateInput(String email, String password) {
-    if (email.isEmpty) { //
+    if (email.isEmpty) {
       return 'Please enter your email';
-    }
-    if (!RegExp(r'^[\w-.]+@([\w-]+.)+[\w-]{2,4}$').hasMatch(email)) {
+    } else if (!RegExp(r'^[\w-.]+@([\w-]+.)+[\w-]{2,4}$').hasMatch(email)) {
       return 'Please enter a valid email';
-    }
-    if (password.isEmpty) {
+    } else if (password.isEmpty) {
       return "Password field is empty";
+    } else {
+      return 'Validated';
     }
-    return 'Validated';
   }
 
   void logIn() async {
@@ -51,7 +65,7 @@ class _loginState extends State<loginPage> {
       try {
         final credential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
-            email: email.text, password: password.text);
+                email: email.text, password: password.text);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found' || e.code == 'invalid-email') {
           print('No user found for that email.');
@@ -72,43 +86,28 @@ class _loginState extends State<loginPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    authProvider = GoogleAuthProvider();
-    email = TextEditingController();
-    password = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    email.dispose();
-    password.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-        title: Text('Login Page'),
-        actions: [
-          //login button
-          IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.home))
-        ],
-      ),
-      body: Center(
-        child: Column(
+      // appBar: AppBar(
+      //   title: Text('Login Page'),
+      //   actions: [
+      //     //login button
+      //     IconButton(
+      //         onPressed: () {
+      //           Navigator.pop(context);
+      //         },
+      //         icon: Icon(Icons.home))
+      //   ],
+      // ),
+      body: Stack(
+        children: [Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '--Login--',
+              'CrossFit',
               style: TextStyle(
-                fontSize: 32,
-                color: Colors.cyan[400],
+                fontSize: 80,
+                color: LabColors.defaultCyan,
               ),
             ),
             Padding(
@@ -139,7 +138,7 @@ class _loginState extends State<loginPage> {
                 shape: CircleBorder(), // Circular shape
                 elevation: 0, // No shadow, // Padding can be adjusted
               ),
-              onPressed: Googlelogin, // login
+              onPressed: googleLogin, // login
               child: Image.asset(
                 'lib/icon/Google.png',
                 width: 40,
@@ -158,7 +157,7 @@ class _loginState extends State<loginPage> {
             ),
           ],
         ),
-      ),
+      ],),
     );
   }
 }
