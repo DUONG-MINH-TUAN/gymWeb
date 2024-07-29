@@ -65,6 +65,6 @@ class LabColors {
 
   static const Color socialDribbble = Color.fromRGBO(234, 76, 137, 1.0);
 
-  static const Color defaultCyan = Color(0xFF99DBEB);
+  static const Color defaultCyan = Color(0xFF6DD5FA);
 
 }
