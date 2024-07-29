@@ -15,6 +15,14 @@ class _signUpState extends State<signUpPage> {
   late TextEditingController username;
   late TextEditingController email;
   late TextEditingController password;
+  String _selectedLanguage = 'English';
+
+  final List<String> _languages = [
+    'English',
+    'Vietnamese',
+    'Francais',
+    'Deutsch',
+  ];
 
   void signUp() async {
     var isValidated = validateInput(username.text, email.text, password.text);
@@ -23,7 +31,7 @@ class _signUpState extends State<signUpPage> {
       //thiếu phần thêm username vào database
       try {
         final credential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.text,
           password: password.text,
         );
@@ -99,7 +107,52 @@ class _signUpState extends State<signUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign up Page'),
+        title: Row(
+          children: [
+            Image.asset('./lib/icon/barbell.png',
+              height: 40,
+              width: 40,
+            ),
+            SizedBox(width: 10,),
+            Text('Sign up page')
+            ,
+            Spacer(),
+            Container(
+              width: 95,
+              height:20,
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  value: _selectedLanguage,
+                  icon: Icon(Icons.language),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedLanguage = newValue!;
+                    });
+                  },
+                  items: _languages.map<DropdownMenuItem<String>>((
+                      String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  selectedItemBuilder: (BuildContext context) {
+                    return _languages.map<Widget>((String value) {
+                      return
+                        Text(
+                          _selectedLanguage,
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        );
+                    }).toList();
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
         actions: [
           //login button
           IconButton(
@@ -114,7 +167,7 @@ class _signUpState extends State<signUpPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '--Sign up--',
+              'Sign up your fitness account',
               style: TextStyle(
                 fontSize: 32,
                 color: Colors.cyan[400],
@@ -157,7 +210,7 @@ class _signUpState extends State<signUpPage> {
             //login button
             Container(
               width: 120,
-              height: 120,
+              height: 30,
               child: ElevatedButton(
                 onPressed: signUp, // login
                 child: const Text('Sign up'),
