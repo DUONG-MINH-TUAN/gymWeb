@@ -109,7 +109,7 @@ class _signUpState extends State<signUpPage> {
       appBar: AppBar(
         title: Row(
           children: [
-            Image.asset('./lib/icon/barbell.png',
+            Image.asset('lib/assets/icon/barbell.png',
               height: 40,
               width: 40,
             ),
