@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:gymApps/View/resetPassword.dart';
 
 class signUpPage extends StatefulWidget {
   const signUpPage({super.key, required this.title});
@@ -15,8 +18,10 @@ class _signUpState extends State<signUpPage> {
   late TextEditingController username;
   late TextEditingController email;
   late TextEditingController password;
+  late TextEditingController forgotPassword;
+  late UserCredential credential1;
   String _selectedLanguage = 'English';
-
+  late String userEmail;
   final List<String> _languages = [
     'English',
     'Vietnamese',
@@ -24,17 +29,21 @@ class _signUpState extends State<signUpPage> {
     'Deutsch',
   ];
 
+
   void signUp() async {
     var isValidated = validateInput(username.text, email.text, password.text);
-
+    // thiếu phần username
+    bool isError = false;
     if (isValidated == 'Validated') {
-      //thiếu phần thêm username vào database
+
       try {
-        final credential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+         credential1 = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.text,
           password: password.text,
         );
+         credential1.user?.sendEmailVerification();
+         userEmail = credential1.user?.email ?? "";
+        print("Successful login");
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           print('The password provided is too weak.');
@@ -44,14 +53,9 @@ class _signUpState extends State<signUpPage> {
       } catch (e) {
         print(e);
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        duration: Duration(
-          seconds: 3,
-        ),
-        content: Text(isValidated),
-      ));
-    }
+
+  }
+    else print(isValidated);
   }
 
   String validateInput(String username, String email, String password) {
@@ -214,6 +218,20 @@ class _signUpState extends State<signUpPage> {
               child: ElevatedButton(
                 onPressed: signUp, // login
                 child: const Text('Sign up'),
+              ),
+            ),
+            SizedBox(height: 10),
+            Container(
+              width: 120,
+              height: 40,
+              child: ElevatedButton(
+                onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => resetPage()),
+                  );
+                }, // reset password
+                child: const Text('Forgot password'),
               ),
             ),
           ],
