@@ -47,7 +47,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => logInPage(title: '',)),
+                  MaterialPageRoute(builder: (context) => logInPage()),
                 );
               },
               icon: Icon(Icons.login)),
