@@ -31,7 +31,7 @@ class logInPageState extends State<logInPage> {
   late GlobalKey<IntroductionScreenState> introKey;
 
   int currentPage = 0;
-  bool passwordVisible = false;
+  // bool passwordVisible = false;
   late List<PageViewModel> pageViewModels;
 
   PageDecoration pageDecoration = PageDecoration(
@@ -283,18 +283,10 @@ class logInPageState extends State<logInPage> {
         fadeInType: FadeInType.up,
         duration: Duration(milliseconds: 1600),
         controller: password,
-        obscureText: passwordVisible,
+        initialObscureText: true,
         labelText: 'Password',
         hintText: 'Your password',
         prefixIcon: Icon(Icons.lock_outline),
-        suffixIcon: IconButton(
-            icon:
-                Icon(passwordVisible ? Icons.visibility : Icons.visibility_off),
-            onPressed: () {
-              setState(() {
-                passwordVisible = !passwordVisible;
-              });
-            }),
       ),
       SizedBox(height: 15),
       FadeInUp(

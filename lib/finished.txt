@@ -9,18 +9,10 @@ Create ButtonStyle noneEffectButtonStyle
 Use MediaQuery instead of getting constraints to get more accuracy of device size during running program
 
 
-
-var pageViews = imageLists.map((imagePath) => PageViewModel(
-  title: "Title of introduction page",
-  body: "Welcome to the app! This is a description of how it works.",
-  image: Image.asset(imagePath, fit: BoxFit.contain),
-)).toList();
-
-fix focus color of text field, label style color change according to hide/unhide
+fix focus color label style according to hide/unhide
 inherited widget
 focusnode
 
-
 wrap text
-three type of list
+
 remove shadow of text button
