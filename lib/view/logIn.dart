@@ -8,7 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:gymApps/widgets/GymAppsStyle.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:gymApps/widgets/GymAppsPageViewList.dart';
+import 'package:gymApps/widgets/GymAppsIntroductionScreen.dart';
 import 'package:gymApps/widgets/GymAppsTextField.dart';
 
 class logInPage extends StatefulWidget {
@@ -223,7 +223,7 @@ class logInPageState extends State<logInPage> {
         hintText: 'What is your registered email ?',
         prefixIcon: Icon(Icons.help_outline),
       ),
-      SizedBox(height: 25),
+      SizedBox(height: 15),
       ObscureFadeInTextField(
         fadeInType: FadeInType.up,
         duration: Duration(milliseconds: 1400),

@@ -7,7 +7,7 @@ import 'package:gymApps/widgets/GymAppsStyle.dart';
 import 'package:gymApps/widgets/GymAppsButton.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:gymApps/widgets/GymAppsTextField.dart';
-import 'package:gymApps/widgets/GymAppsPageViewList.dart';
+import 'package:gymApps/widgets/GymAppsIntroductionScreen.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 
