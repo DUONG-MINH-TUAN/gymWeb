@@ -13,5 +13,6 @@ Fix focus color label style according to hide/unhide
 inherited widget
 focusnode
 wrap text
-
 remove shadow of text button
+global key
+static keyword

@@ -106,12 +106,6 @@ class _signUpState extends State<signUpPage> {
   @override
   Widget build(BuildContext context) {
     deviceSize = MediaQuery.of(context).size;
-    pageViewModels = pageViewElements.map((item) => PageViewModel(
-      title: item['title']!,
-      bodyWidget: item['body']!,
-      image: buildImage(item['image']),
-      decoration: pageDecoration,
-    )).toList();
 
     return SafeArea(
       child: Scaffold(
@@ -137,44 +131,8 @@ class _signUpState extends State<signUpPage> {
             color: Colors.orangeAccent,
             width: deviceSize.width * 0.7,
             height: deviceSize.height,
-            child: IntroductionScreen(
-              key: introKey,
-              globalBackgroundColor: LabColors.defaultCyan,
-              allowImplicitScrolling: true,
-              autoScrollDuration: 10000,
-              infiniteAutoScroll: true,
-              pages: pageViewModels,
-              showSkipButton: false,
-              showDoneButton: false,
-              skipOrBackFlex: 0,
-              nextFlex: 0,
-              showBackButton: true,
-              back: const Icon(Icons.arrow_left_sharp,
-                  color: LabColors.defaultCyan, size: 50),
-              next: const Icon(Icons.arrow_right_sharp,
-                  color: LabColors.defaultCyan, size: 50),
-              curve: Curves.easeInOutQuart,
-              controlsMargin:
-                  const EdgeInsets.only(bottom: 50, right: 30, left: 30),
-              controlsPadding: kIsWeb
-                  ? const EdgeInsets.all(5.0)
-                  : const EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
-              dotsDecorator: const DotsDecorator(
-                size: Size(10.0, 10.0),
-                color: Colors.black54,
-                activeSize: Size(22.0, 10.0),
-                activeColor: LabColors.defaultCyan,
-                activeShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                ),
-              ),
-              dotsContainerDecorator: const ShapeDecoration(
-                color: LabColors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                ),
-              ),
-            )),
+            child: GymAppsIntroductionScreen(introKey: introKey),
+        ),
         buildSimpleSignUpSection(true)
       ],
     );
@@ -257,10 +215,11 @@ class _signUpState extends State<signUpPage> {
           prefixIcon: Icon(Icons.email_outlined),
         ),
         SizedBox(height: 15),
-        FadeInTextField(
+        ObscureFadeInTextField(
           fadeInType: FadeInType.up,
           duration: Duration(milliseconds: 1600),
           controller: password,
+          initialObscureText: true,
           labelText: 'Password',
           hintText: 'Please enter your password',
           prefixIcon: Icon(Icons.password_outlined),
@@ -272,7 +231,7 @@ class _signUpState extends State<signUpPage> {
           controller: passwordConfirm,
           labelText: 'Confirm Password',
           hintText: 'Please re-enter your password',
-          prefixIcon: Icon(Icons.password_outlined),
+          prefixIcon: Icon(Icons.lock_outline),
         ),
         SizedBox(height: 15),
         FadeInUp(
@@ -292,7 +251,7 @@ class _signUpState extends State<signUpPage> {
                     fontSize: 25),
               ),
             )),
-        SizedBox(height: 25),
+        SizedBox(height: 10),
         FadeInUp(
             duration: Duration(milliseconds: 2150),child: GradientButton(onTap: signUp, text: "Sign Up"))
       ],

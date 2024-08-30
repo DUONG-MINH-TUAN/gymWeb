@@ -189,107 +189,11 @@ class logInPageState extends State<logInPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Container(
-            color: Colors.orangeAccent,
-            width: deviceSize.width * 0.7,
-            height: deviceSize.height,
-            child:
-                // PageView.builder(
-                //     controller: pageController,
-                //     itemCount: imageLists.length,
-                //     itemBuilder: (context, index) {
-                //       return Image.asset(imageLists[index], fit: BoxFit.contain);
-                //     }),
-                IntroductionScreen(
-              key: introKey,
-              globalBackgroundColor: LabColors.white,
-              allowImplicitScrolling: true,
-              autoScrollDuration: 10000,
-              infiniteAutoScroll: true,
-              pages: [
-                PageViewModel(
-                  title: "Make use of your spare time",
-                  bodyWidget: const Wrap(children: [
-                    Text("Make use of your spare time ", style: bodyStyle),
-                    Icon(
-                      Icons.access_alarms_outlined,
-                      color: Colors.black54,
-                    ),
-                    Text(" to keep fit and stay healthy", style: bodyStyle),
-                  ]),
-                  image: buildImage("swimming.png"),
-                  decoration: pageDecoration,
-                ),
-                PageViewModel(
-                  title: "Track your workouts",
-                  bodyWidget: const Wrap(children: [
-                    Text("Track your workouts ", style: bodyStyle),
-                    Icon(
-                      Icons.fitness_center,
-                      color: Colors.black54,
-                    ),
-                    Text(" and monitor your progress", style: bodyStyle),
-                  ]),
-                  image: buildImage("running.png"),
-                  decoration: pageDecoration,
-                ),
-                PageViewModel(
-                  title: "Get personalized training plans",
-                  bodyWidget: const Wrap(children: [
-                    Text("Get personalized training plans ", style: bodyStyle),
-                    Icon(
-                      Icons.schedule,
-                      color: Colors.black54,
-                    ),
-                    Text(" tailored to your fitness goals", style: bodyStyle),
-                  ]),
-                  image: buildImage("banner_slider_2.png"),
-                  decoration: pageDecoration,
-                ),
-                PageViewModel(
-                  title: "Join our fitness community",
-                  bodyWidget: const Wrap(children: [
-                    Text("Join our fitness community ", style: bodyStyle),
-                    Icon(
-                      Icons.group,
-                      color: Colors.black54,
-                    ),
-                    Text(" and stay motivated together", style: bodyStyle),
-                  ]),
-                  image: buildImage("banner_slider_3.png"),
-                  decoration: pageDecoration,
-                ),
-              ],
-              showSkipButton: false,
-              showDoneButton: false,
-              skipOrBackFlex: 0,
-              nextFlex: 0,
-              showBackButton: true,
-              //rtl: true, // Display as right-to-left
-              back: const Icon(Icons.arrow_left_sharp,
-                  color: LabColors.defaultCyan, size: 50),
-              next: const Icon(Icons.arrow_right_sharp,
-                  color: LabColors.defaultCyan, size: 50),
-              curve: Curves.easeInOutQuart,
-              // for dots container
-              controlsMargin:
-                  const EdgeInsets.only(bottom: 55, right: 30, left: 30),
-              controlsPadding: const EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
-              dotsDecorator: const DotsDecorator(
-                size: Size(10.0, 10.0),
-                color: Colors.black54,
-                activeSize: Size(22.0, 10.0),
-                activeColor: LabColors.defaultCyan,
-                activeShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                ),
-              ),
-              dotsContainerDecorator: const ShapeDecoration(
-                color: LabColors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                ),
-              ),
-            )),
+          color: Colors.orangeAccent,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.height,
+          child: GymAppsIntroductionScreen(introKey: introKey),
+        ),
         buildSimpleLogInSection(true)
       ],
     );
@@ -322,7 +226,7 @@ class logInPageState extends State<logInPage> {
       SizedBox(height: 25),
       ObscureFadeInTextField(
         fadeInType: FadeInType.up,
-        duration: Duration(milliseconds: 1600),
+        duration: Duration(milliseconds: 1400),
         controller: password,
         initialObscureText: true,
         labelText: 'Password',
@@ -374,7 +278,7 @@ class logInPageState extends State<logInPage> {
       //login button
       SizedBox(height: 30),
       FadeInUp(
-        duration: Duration(milliseconds: 2200),
+        duration: Duration(milliseconds: 2000),
         child: InkWell(
           onTap: logIn,
           child: Container(
@@ -401,7 +305,7 @@ class logInPageState extends State<logInPage> {
 
   Widget FadeInSocialLogInButtons() {
     return FadeInUp(
-      duration: Duration(milliseconds: 2000),
+      duration: Duration(milliseconds: 2200),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
