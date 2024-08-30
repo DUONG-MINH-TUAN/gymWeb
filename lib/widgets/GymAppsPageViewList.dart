@@ -18,10 +18,10 @@ const pageDecoration = PageDecoration(
 );
 
 final List<String> titles = [
-  "Introduction Page 1",
-  "Introduction Page 2",
-  "Introduction Page 3",
-  "Introduction Page 4"
+  "Make Use of Your Spare Time",
+  "Track Your Workouts",
+  "Get Personalized Training Plans",
+  "Join Our Fitness Community"
 ];
 
 final List<Widget> bodies = [

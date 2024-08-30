@@ -205,7 +205,60 @@ class logInPageState extends State<logInPage> {
               allowImplicitScrolling: true,
               autoScrollDuration: 10000,
               infiniteAutoScroll: true,
-              pages: pageViewModels,
+              pages: [
+                PageViewModel(
+                  title: "Make use of your spare time",
+                  bodyWidget: const Wrap(children: [
+                    Text("Make use of your spare time ", style: bodyStyle),
+                    Icon(
+                      Icons.access_alarms_outlined,
+                      color: Colors.black54,
+                    ),
+                    Text(" to keep fit and stay healthy", style: bodyStyle),
+                  ]),
+                  image: buildImage("swimming.png"),
+                  decoration: pageDecoration,
+                ),
+                PageViewModel(
+                  title: "Track your workouts",
+                  bodyWidget: const Wrap(children: [
+                    Text("Track your workouts ", style: bodyStyle),
+                    Icon(
+                      Icons.fitness_center,
+                      color: Colors.black54,
+                    ),
+                    Text(" and monitor your progress", style: bodyStyle),
+                  ]),
+                  image: buildImage("running.png"),
+                  decoration: pageDecoration,
+                ),
+                PageViewModel(
+                  title: "Get personalized training plans",
+                  bodyWidget: const Wrap(children: [
+                    Text("Get personalized training plans ", style: bodyStyle),
+                    Icon(
+                      Icons.schedule,
+                      color: Colors.black54,
+                    ),
+                    Text(" tailored to your fitness goals", style: bodyStyle),
+                  ]),
+                  image: buildImage("banner_slider_2.png"),
+                  decoration: pageDecoration,
+                ),
+                PageViewModel(
+                  title: "Join our fitness community",
+                  bodyWidget: const Wrap(children: [
+                    Text("Join our fitness community ", style: bodyStyle),
+                    Icon(
+                      Icons.group,
+                      color: Colors.black54,
+                    ),
+                    Text(" and stay motivated together", style: bodyStyle),
+                  ]),
+                  image: buildImage("banner_slider_3.png"),
+                  decoration: pageDecoration,
+                ),
+              ],
               showSkipButton: false,
               showDoneButton: false,
               skipOrBackFlex: 0,
