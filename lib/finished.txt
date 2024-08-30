@@ -7,12 +7,11 @@ Replace introduction screen and remove PageController and Timer
 Create FadeInTextField, GradientButton to optimise code and increase efficiency of login page
 Create ButtonStyle noneEffectButtonStyle
 Use MediaQuery instead of getting constraints to get more accuracy of device size during running program
+Fix focus color label style according to hide/unhide
 
 
-fix focus color label style according to hide/unhide
 inherited widget
 focusnode
-
 wrap text
 
 remove shadow of text button

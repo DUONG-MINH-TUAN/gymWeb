@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:gymApps/main.dart';
 import 'package:flutter/material.dart';
 import 'package:gymApps/view/signUp.dart';
 import 'package:animate_do/animate_do.dart';
@@ -31,8 +30,6 @@ class logInPageState extends State<logInPage> {
   late GlobalKey<IntroductionScreenState> introKey;
 
   int currentPage = 0;
-  // bool passwordVisible = false;
-  late List<PageViewModel> pageViewModels;
 
   PageDecoration pageDecoration = PageDecoration(
     titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
@@ -82,10 +79,7 @@ class logInPageState extends State<logInPage> {
   //   print("PageController disposed");
   // }
 
-  Widget buildImage(String assetName, [double width = 420]) {
-    return Image.asset('lib/assets/image/$assetName',
-        width: width, fit: BoxFit.contain);
-  }
+
 
   void googleLogin() async {
     late UserCredential userCredential;
@@ -163,12 +157,7 @@ class logInPageState extends State<logInPage> {
   @override
   Widget build(BuildContext context) {
     deviceSize = MediaQuery.of(context).size;
-    pageViewModels = pageViewElements.map((item) => PageViewModel(
-      title: item['title']!,
-      bodyWidget: item['body']!,
-      image: buildImage(item['image']),
-      decoration: pageDecoration,
-    )).toList();
+
 
     return SafeArea(
       child: Scaffold(
@@ -212,7 +201,7 @@ class logInPageState extends State<logInPage> {
                 //     }),
                 IntroductionScreen(
               key: introKey,
-              globalBackgroundColor: LabColors.defaultCyan,
+              globalBackgroundColor: LabColors.white,
               allowImplicitScrolling: true,
               autoScrollDuration: 10000,
               infiniteAutoScroll: true,
@@ -228,11 +217,10 @@ class logInPageState extends State<logInPage> {
               next: const Icon(Icons.arrow_right_sharp,
                   color: LabColors.defaultCyan, size: 50),
               curve: Curves.easeInOutQuart,
+              // for dots container
               controlsMargin:
-                  const EdgeInsets.only(bottom: 50, right: 30, left: 30),
-              controlsPadding: kIsWeb
-                  ? const EdgeInsets.all(5.0)
-                  : const EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
+                  const EdgeInsets.only(bottom: 55, right: 30, left: 30),
+              controlsPadding: const EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
               dotsDecorator: const DotsDecorator(
                 size: Size(10.0, 10.0),
                 color: Colors.black54,

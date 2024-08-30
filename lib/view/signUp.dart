@@ -7,6 +7,8 @@ import 'package:gymApps/widgets/GymAppsStyle.dart';
 import 'package:gymApps/widgets/GymAppsButton.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:gymApps/widgets/GymAppsTextField.dart';
+import 'package:gymApps/widgets/GymAppsPageViewList.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 
 
 class signUpPage extends StatefulWidget {
@@ -21,6 +23,19 @@ class _signUpState extends State<signUpPage> {
   late TextEditingController email;
   late TextEditingController password;
   late TextEditingController passwordConfirm;
+  late PageController pageController;
+  late GlobalKey<IntroductionScreenState> introKey;
+  late List<PageViewModel> pageViewModels;
+  late Size deviceSize;
+
+  PageDecoration pageDecoration = PageDecoration(
+    titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
+    titlePadding: EdgeInsets.only(top: 8.0, bottom: 12.0),
+    bodyTextStyle: TextStyle(fontSize: 19.0),
+    bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+    pageColor: Colors.white,
+    imagePadding: EdgeInsets.zero,
+  );
 
   void signUp() async {
     var isValidated = validateInput(username.text, email.text, password.text);
@@ -76,6 +91,7 @@ class _signUpState extends State<signUpPage> {
     email = TextEditingController();
     password = TextEditingController();
     passwordConfirm = TextEditingController();
+    introKey = GlobalKey<IntroductionScreenState>();
   }
 
   @override
@@ -89,53 +105,138 @@ class _signUpState extends State<signUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    const paddingSymmetric = EdgeInsets.symmetric(horizontal: 40);
+    deviceSize = MediaQuery.of(context).size;
+    pageViewModels = pageViewElements.map((item) => PageViewModel(
+      title: item['title']!,
+      bodyWidget: item['body']!,
+      image: buildImage(item['image']),
+      decoration: pageDecoration,
+    )).toList();
+
     return SafeArea(
       child: Scaffold(
-        body: LayoutBuilder(builder: (context, constraints) {
-          return Container(
-            color: Colors.white,
-            // padding: paddingSymmetric,
-            height: constraints.maxHeight,
-            width: 450,
-            child: Stack(
-              children: <Widget>[
-                Positioned(
-                  top: -10, // Position at the top
-                  left: 0, // Position at the left
-                  right: 0,
-                  child: FadeInUp(
-                    duration: Duration(milliseconds: 1000),
-                    child: FractionallySizedBox(
-                      widthFactor: 0.8,
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        alignment: Alignment.center,
-                        child: Text(
-                          'CrossFit | Register',
-                          style: TextStyle(
-                              // fontSize: 75,
-                              color: LabColors.defaultCyan,
-                              fontFamily: 'Jomhuaria'),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 80, // Position at the top
-                  left: 0, // Position at the left
-                  right: 0, child: displayTextFieldsAndButton(constraints),
-                )
-              ],
-            ),
-          );
-        }),
+        backgroundColor: Colors.white,
+        body: OrientationBuilder(
+          builder: (context, orientation) {
+            return Center(
+                child: (deviceSize.width >= 750)
+                    ? buildSignUpSectionWithSlider()
+                    : buildSimpleSignUpSection(false),
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget displayTextFieldsAndButton(BoxConstraints constraints) {
+  Widget buildSignUpSectionWithSlider() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Container(
+            color: Colors.orangeAccent,
+            width: deviceSize.width * 0.7,
+            height: deviceSize.height,
+            child: IntroductionScreen(
+              key: introKey,
+              globalBackgroundColor: LabColors.defaultCyan,
+              allowImplicitScrolling: true,
+              autoScrollDuration: 10000,
+              infiniteAutoScroll: true,
+              pages: pageViewModels,
+              showSkipButton: false,
+              showDoneButton: false,
+              skipOrBackFlex: 0,
+              nextFlex: 0,
+              showBackButton: true,
+              back: const Icon(Icons.arrow_left_sharp,
+                  color: LabColors.defaultCyan, size: 50),
+              next: const Icon(Icons.arrow_right_sharp,
+                  color: LabColors.defaultCyan, size: 50),
+              curve: Curves.easeInOutQuart,
+              controlsMargin:
+                  const EdgeInsets.only(bottom: 50, right: 30, left: 30),
+              controlsPadding: kIsWeb
+                  ? const EdgeInsets.all(5.0)
+                  : const EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
+              dotsDecorator: const DotsDecorator(
+                size: Size(10.0, 10.0),
+                color: Colors.black54,
+                activeSize: Size(22.0, 10.0),
+                activeColor: LabColors.defaultCyan,
+                activeShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                ),
+              ),
+              dotsContainerDecorator: const ShapeDecoration(
+                color: LabColors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
+              ),
+            )),
+        buildSimpleSignUpSection(true)
+      ],
+    );
+  }
+
+  Widget buildSimpleSignUpSection(bool isLandscape) {
+    return SingleChildScrollView(
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        height: deviceSize.height,
+        width: isLandscape ? deviceSize.width * 0.299 : deviceSize.width,
+        child: Column(
+          children: <Widget>[displayRichTitle(), displayTextFieldsAndButton()],
+        ),
+      ),
+    );
+  }
+
+  Widget displayRichTitle() {
+    const fontWeight = FontWeight.w400;
+    return FadeInUp(
+      duration: Duration(milliseconds: 1000),
+      child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.only(top: 20, bottom: 30),
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.center,
+            child: RichText(
+                text: TextSpan(children: [
+              TextSpan(
+                  text: "Crossfit ",
+                  style: TextStyle(
+                    color: LabColors.gradientStart,
+                    fontFamily: 'Oswald',
+                    fontWeight: fontWeight,
+                  )),
+              TextSpan(
+                text: "|",
+                style: TextStyle(
+                    color: LabColors.gradientMid,
+                    fontFamily: 'Oswald',
+                    fontWeight: fontWeight),
+              ),
+              TextSpan(
+                  text: " Register",
+                  style: TextStyle(
+                      color: LabColors.gradientEnd,
+                      fontFamily: 'Oswald',
+                      fontWeight: fontWeight))
+            ])),
+          )),
+    );
+  }
+
+  Widget buildImage(String assetName, [double width = 420]) {
+    return Image.asset('lib/assets/image/$assetName',
+        width: width, fit: BoxFit.contain);
+  }
+
+  Widget displayTextFieldsAndButton() {
     return Column(
       children: [
         FadeInTextField(
