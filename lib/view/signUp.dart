@@ -1,11 +1,17 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'logIn.dart';
 import 'package:flutter/material.dart';
+import 'package:animate_do/animate_do.dart';
+import 'package:GymApps/constant/colours.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:GymApps/widgets/GymAppsStyle.dart';
+import 'package:GymApps/widgets/GymAppsButton.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:GymApps/widgets/GymAppsTextField.dart';
+import 'package:GymApps/widgets/GymAppsIntroductionScreen.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 
 class signUpPage extends StatefulWidget {
-  const signUpPage({super.key, required this.title});
-
-  final String title;
+  const signUpPage({super.key});
 
   @override
   State<signUpPage> createState() => _signUpState();
@@ -15,14 +21,20 @@ class _signUpState extends State<signUpPage> {
   late TextEditingController username;
   late TextEditingController email;
   late TextEditingController password;
-  String _selectedLanguage = 'English';
+  late TextEditingController passwordConfirm;
+  late PageController pageController;
+  late GlobalKey<IntroductionScreenState> introKey;
+  late List<PageViewModel> pageViewModels;
+  late Size deviceSize;
 
-  final List<String> _languages = [
-    'English',
-    'Vietnamese',
-    'Francais',
-    'Deutsch',
-  ];
+  PageDecoration pageDecoration = PageDecoration(
+    titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
+    titlePadding: EdgeInsets.only(top: 8.0, bottom: 12.0),
+    bodyTextStyle: TextStyle(fontSize: 19.0),
+    bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+    pageColor: Colors.white,
+    imagePadding: EdgeInsets.zero,
+  );
 
   void signUp() async {
     var isValidated = validateInput(username.text, email.text, password.text);
@@ -31,7 +43,7 @@ class _signUpState extends State<signUpPage> {
       //thiếu phần thêm username vào database
       try {
         final credential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.text,
           password: password.text,
         );
@@ -70,29 +82,15 @@ class _signUpState extends State<signUpPage> {
     return 'Validated';
   }
 
-  // void Googlelogin() async {
-  //   late UserCredential credential;
-  //   try {
-  //     if (kIsWeb) {
-  //       credential = await FirebaseAuth.instance.signInWithPopup(authProvider);
-  //     } else {}
-  //
-  //     if (credential.user?.uid != null) {
-  //       print('login successfully');
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
   // tự động chạy khi tạo page này
   @override
   void initState() {
     super.initState();
     username = TextEditingController();
-    // authProvider = GoogleAuthProvider();
     email = TextEditingController();
     password = TextEditingController();
+    passwordConfirm = TextEditingController();
+    introKey = GlobalKey<IntroductionScreenState>();
   }
 
   @override
@@ -100,125 +98,165 @@ class _signUpState extends State<signUpPage> {
     username.dispose();
     email.dispose();
     password.dispose();
+    passwordConfirm.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset('lib/assets/icon/barbell.png',
-              height: 40,
-              width: 40,
-            ),
-            SizedBox(width: 10,),
-            Text('Sign up page')
-            ,
-            Spacer(),
-            Container(
-              width: 95,
-              height:20,
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: _selectedLanguage,
-                  icon: Icon(Icons.language),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedLanguage = newValue!;
-                    });
-                  },
-                  items: _languages.map<DropdownMenuItem<String>>((
-                      String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  selectedItemBuilder: (BuildContext context) {
-                    return _languages.map<Widget>((String value) {
-                      return
-                        Text(
-                          _selectedLanguage,
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        );
-                    }).toList();
-                  },
-                ),
-              ),
-            ),
-          ],
+    deviceSize = MediaQuery.of(context).size;
+
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: OrientationBuilder(
+          builder: (context, orientation) {
+            return Center(
+              child: (deviceSize.width >= 750)
+                  ? buildSignUpSectionWithSlider()
+                  : buildSimpleSignUpSection(false),
+            );
+          },
         ),
-        actions: [
-          //login button
-          IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.home))
-        ],
       ),
-      body: Center(
+    );
+  }
+
+  Widget buildSignUpSectionWithSlider() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Container(
+          color: Colors.orangeAccent,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.height,
+          child: GymAppsIntroductionScreen(introKey: introKey),
+        ),
+        buildSimpleSignUpSection(true)
+      ],
+    );
+  }
+
+  Widget buildSimpleSignUpSection(bool isLandscape) {
+    return SingleChildScrollView(
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.only(left: 25, right: 50),
+        height: deviceSize.height,
+        width: isLandscape ? deviceSize.width * 0.299 : deviceSize.width,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Sign up your fitness account',
-              style: TextStyle(
-                fontSize: 32,
-                color: Colors.cyan[400],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 100, right: 100),
-              child: TextFormField(
-                controller: username,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Username',
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: 100, right: 100),
-              child: TextFormField(
-                controller: email,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Email',
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: 100, right: 100),
-              child: TextFormField(
-                controller: password,
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Password',
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            //login button
-            Container(
-              width: 120,
-              height: 30,
-              child: ElevatedButton(
-                onPressed: signUp, // login
-                child: const Text('Sign up'),
-              ),
-            ),
-          ],
+          children: <Widget>[displayRichTitle(), displayTextFieldsAndButton()],
         ),
       ),
+    );
+  }
+
+  Widget displayRichTitle() {
+    const fontWeight = FontWeight.w400;
+    return FadeInUp(
+      duration: Duration(milliseconds: 1000),
+      child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.only(top: 20, bottom: 30),
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.center,
+            child: RichText(
+                text: TextSpan(children: [
+              TextSpan(
+                  text: "Crossfit ",
+                  style: TextStyle(
+                    color: LabColors.gradientStart,
+                    fontFamily: 'Oswald',
+                    fontWeight: fontWeight,
+                  )),
+              TextSpan(
+                text: "|",
+                style: TextStyle(
+                    color: LabColors.gradientMid,
+                    fontFamily: 'Oswald',
+                    fontWeight: fontWeight),
+              ),
+              TextSpan(
+                  text: " Register",
+                  style: TextStyle(
+                      color: LabColors.gradientEnd,
+                      fontFamily: 'Oswald',
+                      fontWeight: fontWeight))
+            ])),
+          )),
+    );
+  }
+
+  Widget buildImage(String assetName, [double width = 420]) {
+    return Image.asset('lib/assets/image/$assetName',
+        width: width, fit: BoxFit.contain);
+  }
+
+  Widget displayTextFieldsAndButton() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        FadeInTextField(
+          fadeInType: FadeInType.up,
+          duration: Duration(milliseconds: 1200),
+          controller: username,
+          labelText: 'Username',
+          hintText: 'Username for your new account',
+          prefixIcon: Icon(Icons.person_outline),
+        ),
+        SizedBox(height: 15),
+        FadeInTextField(
+          fadeInType: FadeInType.up,
+          duration: Duration(milliseconds: 1400),
+          controller: email,
+          labelText: 'Email',
+          hintText: 'Your email used for register new account',
+          prefixIcon: Icon(Icons.email_outlined),
+        ),
+        SizedBox(height: 15),
+        ObscureFadeInTextField(
+          fadeInType: FadeInType.up,
+          duration: Duration(milliseconds: 1600),
+          controller: password,
+          initialObscureText: true,
+          labelText: 'Password',
+          hintText: 'Please enter your password',
+          prefixIcon: Icon(Icons.password_outlined),
+        ),
+        SizedBox(height: 15),
+        FadeInTextField(
+          fadeInType: FadeInType.up,
+          duration: Duration(milliseconds: 1800),
+          controller: passwordConfirm,
+          labelText: 'Confirm Password',
+          hintText: 'Please re-enter your password',
+          prefixIcon: Icon(Icons.lock_outline),
+        ),
+        SizedBox(height: 25),
+        FadeInUp(
+            duration: Duration(milliseconds: 1900),
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => logInPage()));
+              },
+              style: GymAppsStyle.noneEffectButtonStyle,
+              child: Text(
+                "Have An Account Already ? Let's Log In",
+                style: TextStyle(
+                    color: LabColors.defaultCyan,
+                    height: 1,
+                    fontFamily: 'Jomhuaria',
+                    fontSize: 25),
+              ),
+            )),
+        SizedBox(height: 25,),
+        FadeInUp(
+            duration: Duration(milliseconds: 2150),
+            child: GradientButton(onTap: signUp, text: "Sign Up")
+        )
+      ],
     );
   }
 }

@@ -1,0 +1,93 @@
+Add status bar color in main.dart
+Fix oversize title on sign up and log in screens
+Add flexible and fitted box widget to make the page more responsive for authentication page
+Remove LayoutBuilder, use OrientationBuilder instead to support mobile rotation mode
+Change main font into Oswald
+Replace introduction screen and remove PageController and Timer
+Create FadeInTextField, GradientButton to optimise code and increase efficiency of login page
+Create ButtonStyle noneEffectButtonStyle
+Use MediaQuery instead of getting constraints to get more accuracy of device size during running program
+Fix focus color label style according to hide/unhide
+
+
+Variables store references. The variable called name contains a reference to a String object with a value of "Bob".
+var name = 'Bob';
+The type of the name variable is inferred to be String, but you can change that type by specifying it.
+If an object isn't restricted to a single type, specify the Object type
+Object name = 'Bob';
+
+oop
+extends and implement
+abstract class
+
+
+Null safety
+{} annotations
+int years = DateTime.now().difference(launchDate).inDays ~/ 365;
+top levels variable
+
+
+the spread operator (...) to insert all the values of a list into another list
+Control-flow operators
+assert
+
+fold add step
+map literals
+developer settings mode
+ little about router
+
+both case alll not using and all using copyWith() work normally, but why one uses one not would lead to error
+cpoy with theme Data
+
+InheritedWidget
+ValueNontifier bản chất của nó khi giá trị cũ = giá trị mới thì không trigger, đây có thể vừa lợi vừa hại , khi cấp 2 class trong giống nhau thì ko có nghĩa giá trị nó như nhau, mà nó là 2 instance khác nhau
+setState rebuild lại tất cả các Widget dù cho data của nó có bị thay đổi hay ko, miễn là nó nằm trong hàm build
+ValueNotifier cô lập lại các Widget cần rebuild thì bỏ vô builder của ValueNotifier, 
+ValueNotifier add listener remove listener
+listEquals 3 steps check
+identical function => check tham trị, tham chiếu + so sanh runtimeType
+ tham trị : truyen gia tri vao trong 1 bien
+ tham chieu : găn gia trị, đổi tượng thuộc 1 biến cho 1 biến, cùng trỏ về 1 đối tượng
+disadvantage of timer
+Stateful widget nen dược khai báo bên ngoài hàm build, tận dụng lifecycle của nó để tối ưu,
+phòng trường hợp các giá trị bị reset ko mong muốn
+ValueNontifier và StatelessWidget
+Wrap
+
+The default value of an optional parameter must be constant
+didChangeDependencies(): This method is used to detect changes in the InheritedWidget. When the UsernameInheritedWidget updates its username, the state (username) inside UsernameInheritedDisplayState is updated via setState()
+
+https://stackoverflow.com/questions/52197922/flutter-create-command-was-unsuccessful-error
+https://stackoverflow.com/questions/52442724/boxconstraints-forces-an-infinite-width
+https://stackoverflow.com/questions/54007073/what-does-the-shrinkwrap-property-do-in-flutter
+https://stackoverflow.com/questions/10404516/how-can-i-compare-lists-for-equality-in-dart
+https://medium.com/@thekavak/flutter-valuenotifier-with-examples-66b3933d7036
+https://dev.to/solnsumei/easy-state-management-with-valuenotifiers-and-inherited-widgets-in-flutter-1070
+https://stackoverflow.com/questions/52681041/floating-action-button-with-text-label-flutter
+https://medium.com/@CavinMac/inherited-widgets-in-depth-413794c3b3d9
+https://codewithandrea.com/articles/parse-json-dart/
+https://stackoverflow.com/questions/73605027/problem-with-pairing-device-using-wifi-in-android-studio
+https://stackoverflow.com/questions/59927528/how-to-refresh-listview-builder-flutter
+https://stackoverflow.com/questions/49508322/flutter-listview-lazy-loading
+https://stackoverflow.com/questions/56985004/what-does-the-error-cant-access-this-in-a-field-initializer-mean
+
+
+https://mobikul.com/lifecycle-of-a-flutter-app/
+build vs didchange
+https://www.youtube.com/watch?v=og-vJqLzg2c
+  List<T> _items = [];
+
+  List<T> get items => _items;
+List.from(myList.value)..add
+
+There are multiple heroes that share the same tag within a subtree - fab
+https://stackoverflow.com/questions/55166999/how-to-make-two-floating-action-buttons-in-flutter
+https://github.com/dint-dev/universal_io/issues/19
+https://github.com/dint-dev/universal_io/issues/19
+https://stackoverflow.com/questions/16800540/how-should-i-check-if-the-input-is-an-email-address-in-flutter
+drowdowntextfield, validator,
+elevatedButtonTheme
+global key and form
+inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],

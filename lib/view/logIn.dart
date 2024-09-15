@@ -1,12 +1,15 @@
 import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:gymApps/constant/colours.dart';
+import 'package:GymApps/view/signUp.dart';
 import 'package:animate_do/animate_do.dart';
-import 'signUp.dart';
+import 'package:GymApps/constant/colours.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:GymApps/widgets/GymAppsStyle.dart';
+import 'package:introduction_screen/introduction_screen.dart';
+import 'package:GymApps/widgets/GymAppsIntroductionScreen.dart';
+import 'package:GymApps/widgets/GymAppsTextField.dart';
 
 class logInPage extends StatefulWidget {
   const logInPage({super.key});
@@ -19,14 +22,21 @@ class logInPageState extends State<logInPage> {
   late TextEditingController email;
   late TextEditingController password;
   late GoogleAuthProvider authProvider;
-  late PageController pageController;
-  late Timer timer;
+  PageController? pageController;
+  Timer? timer;
+  late Size deviceSize;
+  late GlobalKey<IntroductionScreenState> introKey;
 
   int currentPage = 0;
-  bool passwordVisible = false;
-  var imageLists = ["lib/assets/image/banner_slider_0.png",
-                    "lib/assets/image/banner_slider_1.png",
-  "lib/assets/image/banner_slider_2.png","lib/assets/image/banner_slider_3.png"];
+
+  PageDecoration pageDecoration = PageDecoration(
+    titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
+    titlePadding: EdgeInsets.only(top: 8.0, bottom: 12.0),
+    bodyTextStyle: TextStyle(fontSize: 19.0),
+    bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+    pageColor: Colors.white,
+    imagePadding: EdgeInsets.zero,
+  );
 
   @override
   void initState() {
@@ -34,28 +44,38 @@ class logInPageState extends State<logInPage> {
     authProvider = GoogleAuthProvider();
     email = TextEditingController();
     password = TextEditingController();
-    pageController = PageController(initialPage: currentPage);
-    timer = Timer.periodic(Duration(seconds: 5), (Timer timer) {
-      print(currentPage);
-      setState(() {
-        currentPage = ++currentPage % imageLists.length;
-      });
-      pageController.animateToPage(
-        currentPage,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeIn,
-      );
-    });
+    introKey = GlobalKey<IntroductionScreenState>();
   }
 
   @override
   void dispose() {
-    timer.cancel();
-    pageController.dispose();
-    email.dispose();
-    password.dispose();
     super.dispose();
   }
+
+  // void initializePageController() {
+  //   pageController = PageController(initialPage: currentPage);
+  //   timer = Timer.periodic(Duration(seconds: 5), (Timer timer) {
+  //     // print(currentPage);
+  //     setState(() {
+  //       currentPage = ++currentPage % pageViewModels.length;
+  //     });
+  //     pageController?.animateToPage(
+  //       currentPage,
+  //       duration: Duration(milliseconds: 300),
+  //       curve: Curves.easeIn,
+  //     );
+  //   });
+  // }
+
+  // void disposePageController() {
+  //   timer?.cancel();
+  //   pageController?.dispose();
+  //   pageController = null;
+  //   print("Timer cancelled");
+  //   print("PageController disposed");
+  // }
+
+
 
   void googleLogin() async {
     late UserCredential userCredential;
@@ -132,152 +152,113 @@ class logInPageState extends State<logInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: LayoutBuilder(builder: (context, constraints) {
-        if (constraints.maxWidth > 800) {
-          return buildLogInSectionWithSlider(constraints);
-        } else {
-          return Center(child: buildSimpleLogInSection(constraints));
-        }
-      }),
-    );
-  }
+    deviceSize = MediaQuery.of(context).size;
 
-  Widget buildSimpleLogInSection(BoxConstraints constraints) {
-    const paddingSymmetric = EdgeInsets.symmetric(horizontal: 40);
-    return SingleChildScrollView(
-      child: Container(
-        color: Colors.white,
-        padding: paddingSymmetric,
-        height: constraints.maxHeight,
-        width: 450,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              top: -10, // Position at the top
-              left: 0, // Position at the left
-              right: 0,
-              child: FadeInDown(
-                duration: Duration(milliseconds: 2000),
-                child: Container(
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  child: Text(
-                    'CrossFit',
-                    style: TextStyle(
-                        fontSize: 75,
-                        color: LabColors.defaultCyan,
-                        fontFamily: 'Jomhuaria'),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-                top: 80, // Position at the top
-                left: 0, // Position at the left
-                right: 0,
-                child: displayTextFieldsAndButton(constraints))
-          ],
+
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: OrientationBuilder(
+          builder: (context, orientation) {
+            // if (orientation == Orientation.landscape) {
+            //   if (pageController == null) {
+            //     initializePageController();
+            //   }
+            // } else {
+            //   if (pageController != null) {
+            //     disposePageController();
+            //   }
+            // }
+            return Center(
+                child: (deviceSize.width >= 750)
+                    ? buildLogInSectionWithSlider()
+                    : buildSimpleLogInSection(false),
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget buildLogInSectionWithSlider(BoxConstraints constraints) {
+  Widget buildLogInSectionWithSlider() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
+      children: <Widget>[
         Container(
-          width: constraints.maxWidth - 450,
-          height: constraints.maxHeight,
-          child: PageView.builder(
-        controller: pageController,
-        itemCount: imageLists.length,
-        itemBuilder: (context, index) {
-      return Image.asset(imageLists[index],
-                fit: BoxFit.fitHeight);}
-          ),
+          color: Colors.orangeAccent,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.height,
+          child: GymAppsIntroductionScreen(introKey: introKey),
         ),
-        buildSimpleLogInSection(constraints)
+        buildSimpleLogInSection(true)
       ],
     );
   }
 
-  Widget displayTextFieldsAndButton(BoxConstraints constraints) {
-    return Container(
-        child: Column(children: [
-      FadeInLeft(
-        duration: Duration(milliseconds: 2000),
-        child: TextField(
-          controller: email,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            isDense: false,
-            hintText: "What is your registered email ?",
-            labelText: 'Email',
-            prefixIcon: Icon(Icons.help_outline),
-          ),
+  Widget buildSimpleLogInSection(bool isLandscape) {
+    return SingleChildScrollView(
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.only(left: 25, right: 50),
+        height: deviceSize.height,
+        width: isLandscape ? deviceSize.width * 0.299 : deviceSize.width,
+        child: Column(
+          children: <Widget>[displayRichTitle(), displayTextFieldsAndButton()],
         ),
+      ),
+    );
+  }
+
+  Widget displayTextFieldsAndButton() {
+    return Column(children: [
+      FadeInTextField(
+        fadeInType: FadeInType.up,
+        duration: Duration(milliseconds: 1200),
+        controller: email,
+        labelText: 'Email',
+        hintText: 'What is your registered email ?',
+        prefixIcon: Icon(Icons.help_outline),
       ),
       SizedBox(height: 15),
-      FadeInRight(
-        duration: Duration(milliseconds: 2000),
-        child: TextFormField(
-          controller: password,
-          obscureText: passwordVisible,
-          decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              isDense: false,
-              hintText: 'Password',
-              labelText: 'Your password',
-              prefixIcon: Icon(Icons.lock),
-              suffixIcon: IconButton(
-                  icon: Icon(passwordVisible
-                      ? Icons.visibility
-                      : Icons.visibility_off),
-                  onPressed: () {
-                    setState(() {
-                      passwordVisible = !passwordVisible;
-                    });
-                  })),
-        ),
+      ObscureFadeInTextField(
+        fadeInType: FadeInType.up,
+        duration: Duration(milliseconds: 1400),
+        controller: password,
+        initialObscureText: true,
+        labelText: 'Password',
+        hintText: 'Your password',
+        prefixIcon: Icon(Icons.lock_outline),
       ),
-      SizedBox(height: 5),
-      FadeInLeft(
-          duration: Duration(milliseconds: 2000),
+      SizedBox(height: 15),
+      FadeInUp(
+          duration: Duration(milliseconds: 1600),
           child: TextButton(
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: Size(60, 30),
+              style: ButtonStyle(
+                overlayColor: WidgetStateProperty.all(Colors.transparent),
+                // Tắt hiệu ứng hover và click
+                padding: WidgetStateProperty.all(EdgeInsets.zero),
+                // Bỏ padding
+                minimumSize: WidgetStateProperty.all(Size(50, 30)),
+                // Kích thước tối thiểu
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => signUpPage(
-                              title: 'Sign Up',
-                            )));
+                Navigator.pushNamed(context, '/home');
               },
               child: Text(
-                "New To This App ? Let's Sign Up",
+                "New User ? Let's Sign Up",
                 style: TextStyle(
                     color: LabColors.defaultCyan,
                     fontFamily: 'Jomhuaria',
                     fontSize: 25),
               ))),
-      FadeInRight(
-          duration: Duration(milliseconds: 2000),
+      FadeInUp(
+          duration: Duration(milliseconds: 1800),
           child: TextButton(
             onPressed: () {
               // showEmailDialog(context);
             },
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              minimumSize: Size(60, 30),
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
+            style: GymAppsStyle.noneEffectButtonStyle,
             child: Text(
               "Forgot Password ?",
               style: TextStyle(
@@ -287,25 +268,11 @@ class logInPageState extends State<logInPage> {
                   fontSize: 25),
             ),
           )),
-      SizedBox(height: 10),
-      FadeInUp(
-        duration: Duration(milliseconds: 2000),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: CircleBorder(), // Circular shape
-            elevation: 0, // No shadow, // Padding can be adjusted
-          ),
-          onPressed: googleLogin, // login
-          child: Image.asset(
-            'lib/assets/icon/Google.png',
-            width: 40,
-            height: 40,
-          ),
-        ),
-      ),
-      //login button
       SizedBox(height: 20),
-      FadeInDown(
+      FadeInSocialLogInButtons(),
+      //login button
+      SizedBox(height: 30),
+      FadeInUp(
         duration: Duration(milliseconds: 2000),
         child: InkWell(
           onTap: logIn,
@@ -328,10 +295,130 @@ class logInPageState extends State<logInPage> {
         ),
       ),
       SizedBox(height: 35),
-      Image.asset(
-        'lib/assets/image/swimming.jpg',
-        height: constraints.maxHeight * 0.275,
-      )
-    ]));
+    ]);
+  }
+
+  Widget FadeInSocialLogInButtons() {
+    return FadeInUp(
+      duration: Duration(milliseconds: 2200),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ElevatedButton(
+            style: ButtonStyle(
+              elevation: WidgetStateProperty.all(0),
+              overlayColor: WidgetStateProperty.all(Colors.transparent),
+              // Tắt hiệu ứng hover và click
+              padding: WidgetStateProperty.all(EdgeInsets.zero),
+              // Bỏ padding
+              minimumSize: WidgetStateProperty.all(Size(50, 30)),
+              // Kích thước tối thiểu
+              tapTargetSize: MaterialTapTargetSize
+                  .shrinkWrap, // Tắt hiệu ứng ripple mở rộng
+            ),
+            onPressed: googleLogin, // login
+            child: Container(
+              color: Colors.white,
+              width: 50, // Đặt chiều rộng mong muốn
+              height: 50, // Đặt chiều cao mong muốn
+              child: Image.asset(
+                'lib/assets/icon/google.png',
+                // Đường dẫn đến hình ảnh của bạn
+                fit: BoxFit.contain, // Hoặc BoxFit.cover
+              ),
+            ),
+          ),
+          ElevatedButton(
+            style: ButtonStyle(
+              elevation: WidgetStateProperty.all(0),
+              overlayColor: WidgetStateProperty.all(Colors.transparent),
+              // Tắt hiệu ứng hover và click
+              padding: WidgetStateProperty.all(EdgeInsets.zero),
+              // Bỏ padding
+              minimumSize: WidgetStateProperty.all(Size(50, 30)),
+              // Kích thước tối thiểu
+              tapTargetSize: MaterialTapTargetSize
+                  .shrinkWrap, // Tắt hiệu ứng ripple mở rộng
+            ),
+            onPressed: googleLogin, // login
+            child: Container(
+              color: Colors.white,
+              width: 45, // Đặt chiều rộng mong muốn
+              height: 45, // Đặt chiều cao mong muốn
+              child: Image.asset(
+                'lib/assets/icon/x.png',
+                // Đường dẫn đến hình ảnh của bạn
+                fit: BoxFit.contain, // Hoặc BoxFit.cover
+              ),
+            ),
+          ),
+          ElevatedButton(
+            style: ButtonStyle(
+              elevation: WidgetStateProperty.all(0),
+              overlayColor: WidgetStateProperty.all(Colors.transparent),
+              // Tắt hiệu ứng hover và click
+              padding: WidgetStateProperty.all(EdgeInsets.zero),
+              // Bỏ padding
+              minimumSize: WidgetStateProperty.all(Size(50, 30)),
+              // Kích thước tối thiểu
+              tapTargetSize: MaterialTapTargetSize
+                  .shrinkWrap, // Tắt hiệu ứng ripple mở rộng
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, '/home');
+            }, // login
+            child: Container(
+              color: Colors.white,
+              width: 50, // Đặt chiều rộng mong muốn
+              height: 50, // Đặt chiều cao mong muốn
+              child: Image.asset(
+                'lib/assets/icon/home.png',
+                // Đường dẫn đến hình ảnh của bạn
+                fit: BoxFit.contain, // Hoặc BoxFit.cover
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget displayRichTitle() {
+    const fontWeight = FontWeight.w400;
+    return FadeInUp(
+      duration: Duration(milliseconds: 1000),
+      child: Container(
+          // color: LabColors.socialTwitter,
+          width: double.infinity,
+          padding: EdgeInsets.only(top: 20, bottom: 30),
+
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.center,
+            child: RichText(
+                text: TextSpan(children: [
+              TextSpan(
+                  text: "Crossfit ",
+                  style: TextStyle(
+                    color: LabColors.gradientStart,
+                    fontFamily: 'Oswald',
+                    fontWeight: fontWeight,
+                  )),
+              TextSpan(
+                text: "|",
+                style: TextStyle(
+                    color: LabColors.gradientMid,
+                    fontFamily: 'Oswald',
+                    fontWeight: fontWeight),
+              ),
+              TextSpan(
+                  text: " Log In",
+                  style: TextStyle(
+                      color: LabColors.gradientEnd,
+                      fontFamily: 'Oswald',
+                      fontWeight: fontWeight))
+            ])),
+          )),
+    );
   }
 }
