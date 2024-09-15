@@ -1,15 +1,14 @@
 import 'logIn.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:gymApps/constant/colours.dart';
+import 'package:GymApps/constant/colours.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gymApps/widgets/GymAppsStyle.dart';
-import 'package:gymApps/widgets/GymAppsButton.dart';
+import 'package:GymApps/widgets/GymAppsStyle.dart';
+import 'package:GymApps/widgets/GymAppsButton.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:gymApps/widgets/GymAppsTextField.dart';
-import 'package:gymApps/widgets/GymAppsIntroductionScreen.dart';
+import 'package:GymApps/widgets/GymAppsTextField.dart';
+import 'package:GymApps/widgets/GymAppsIntroductionScreen.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-
 
 class signUpPage extends StatefulWidget {
   const signUpPage({super.key});
@@ -113,9 +112,9 @@ class _signUpState extends State<signUpPage> {
         body: OrientationBuilder(
           builder: (context, orientation) {
             return Center(
-                child: (deviceSize.width >= 750)
-                    ? buildSignUpSectionWithSlider()
-                    : buildSimpleSignUpSection(false),
+              child: (deviceSize.width >= 750)
+                  ? buildSignUpSectionWithSlider()
+                  : buildSimpleSignUpSection(false),
             );
           },
         ),
@@ -128,10 +127,10 @@ class _signUpState extends State<signUpPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Container(
-            color: Colors.orangeAccent,
-            width: deviceSize.width * 0.7,
-            height: deviceSize.height,
-            child: GymAppsIntroductionScreen(introKey: introKey),
+          color: Colors.orangeAccent,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.height,
+          child: GymAppsIntroductionScreen(introKey: introKey),
         ),
         buildSimpleSignUpSection(true)
       ],
@@ -142,7 +141,7 @@ class _signUpState extends State<signUpPage> {
     return SingleChildScrollView(
       child: Container(
         color: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.only(left: 25, right: 50),
         height: deviceSize.height,
         width: isLandscape ? deviceSize.width * 0.299 : deviceSize.width,
         child: Column(
@@ -196,6 +195,7 @@ class _signUpState extends State<signUpPage> {
 
   Widget displayTextFieldsAndButton() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         FadeInTextField(
           fadeInType: FadeInType.up,
@@ -233,13 +233,13 @@ class _signUpState extends State<signUpPage> {
           hintText: 'Please re-enter your password',
           prefixIcon: Icon(Icons.lock_outline),
         ),
-        SizedBox(height: 15),
+        SizedBox(height: 25),
         FadeInUp(
             duration: Duration(milliseconds: 1900),
             child: TextButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    logInPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => logInPage()));
               },
               style: GymAppsStyle.noneEffectButtonStyle,
               child: Text(
@@ -251,9 +251,11 @@ class _signUpState extends State<signUpPage> {
                     fontSize: 25),
               ),
             )),
-        SizedBox(height: 10),
+        SizedBox(height: 25,),
         FadeInUp(
-            duration: Duration(milliseconds: 2150),child: GradientButton(onTap: signUp, text: "Sign Up"))
+            duration: Duration(milliseconds: 2150),
+            child: GradientButton(onTap: signUp, text: "Sign Up")
+        )
       ],
     );
   }

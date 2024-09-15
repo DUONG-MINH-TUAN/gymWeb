@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:gymApps/view/signUp.dart';
+import 'package:GymApps/view/signUp.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:gymApps/constant/colours.dart';
+import 'package:GymApps/constant/colours.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:gymApps/widgets/GymAppsStyle.dart';
+import 'package:GymApps/widgets/GymAppsStyle.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:gymApps/widgets/GymAppsIntroductionScreen.dart';
-import 'package:gymApps/widgets/GymAppsTextField.dart';
+import 'package:GymApps/widgets/GymAppsIntroductionScreen.dart';
+import 'package:GymApps/widgets/GymAppsTextField.dart';
 
 class logInPage extends StatefulWidget {
   const logInPage({super.key});
@@ -21,8 +21,6 @@ class logInPage extends StatefulWidget {
 class logInPageState extends State<logInPage> {
   late TextEditingController email;
   late TextEditingController password;
-  late FocusNode emailFocusNode;
-  late FocusNode passwordFocusNode;
   late GoogleAuthProvider authProvider;
   PageController? pageController;
   Timer? timer;
@@ -46,8 +44,6 @@ class logInPageState extends State<logInPage> {
     authProvider = GoogleAuthProvider();
     email = TextEditingController();
     password = TextEditingController();
-    emailFocusNode = FocusNode();
-    passwordFocusNode = FocusNode();
     introKey = GlobalKey<IntroductionScreenState>();
   }
 
@@ -203,7 +199,7 @@ class logInPageState extends State<logInPage> {
     return SingleChildScrollView(
       child: Container(
         color: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.only(left: 25, right: 50),
         height: deviceSize.height,
         width: isLandscape ? deviceSize.width * 0.299 : deviceSize.width,
         child: Column(
@@ -247,8 +243,7 @@ class logInPageState extends State<logInPage> {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => signUpPage()));
+                Navigator.pushNamed(context, '/home');
               },
               child: Text(
                 "New User ? Let's Sign Up",

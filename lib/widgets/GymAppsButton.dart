@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymApps/constant/colours.dart';
+import 'package:GymApps/constant/colours.dart';
 
 class GradientButton extends StatelessWidget {
   final Function onTap;

@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:696450645574:android:cf602fd5f0c43999635447",
         "android_client_info": {
-          "package_name": "com.example.gymApps"
+          "package_name": "com.example.GymApps"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "696450645574-db8k4f2rj8nncmcc0ikh15ra26t4ta44.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.gymApps",
+            "package_name": "com.example.GymApps",
             "certificate_hash": "1bec7e4a3e67bfe2f0e3d97e66f486cb2d93f652"
           }
         },

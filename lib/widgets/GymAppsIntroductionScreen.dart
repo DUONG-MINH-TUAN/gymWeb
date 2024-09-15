@@ -1,6 +1,6 @@
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:gymApps/constant/colours.dart';
+import 'package:GymApps/constant/colours.dart';
 
 class GymAppsIntroductionScreen extends StatelessWidget {
   final GlobalKey<IntroductionScreenState> introKey;

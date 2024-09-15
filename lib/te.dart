@@ -1,16 +1,16 @@
 // import 'dart:async';
-// import 'package:gymApps/main.dart';
+// import 'package:GymApps/main.dart';
 // import 'package:flutter/material.dart';
-// import 'package:gymApps/view/signUp.dart';
+// import 'package:GymApps/view/signUp.dart';
 // import 'package:animate_do/animate_do.dart';
-// import 'package:gymApps/constant/colours.dart';
+// import 'package:GymApps/constant/colours.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 // import 'package:flutter/foundation.dart' show kIsWeb;
-// import 'package:gymApps/widgets/GymAppsStyle.dart';
+// import 'package:GymApps/widgets/GymAppsStyle.dart';
 // import 'package:transparent_image/transparent_image.dart';
 //
-// import 'package:gymApps/widgets/GymAppsTextField.dart';
+// import 'package:GymApps/widgets/GymAppsTextField.dart';
 //
 // class logInPage extends StatefulWidget {
 //   const logInPage({super.key});
