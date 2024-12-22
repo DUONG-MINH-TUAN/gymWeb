@@ -1,0 +1,25 @@
+Add status bar color in main.dart
+Fix oversize title on sign up and log in screens
+Add flexible and fitted box widget to make the page more responsive for authentication page
+Remove LayoutBuilder, use OrientationBuilder instead to support mobile rotation mode
+Change main font into Oswald
+Replace introduction screen and remove PageController and Timer
+Create FadeInTextField, GradientButton to optimise code and increase efficiency of login page
+Create ButtonStyle noneEffectButtonStyle
+Use MediaQuery instead of getting constraints to get more accuracy of device size during running program
+
+
+
+var pageViews = imageLists.map((imagePath) => PageViewModel(
+  title: "Title of introduction page",
+  body: "Welcome to the app! This is a description of how it works.",
+  image: Image.asset(imagePath, fit: BoxFit.contain),
+)).toList();
+
+fix focus color of text field, label style color change according to hide/unhide
+inherited widget
+focusnode
+
+
+wrap text
+three type of list

@@ -1,14 +1,18 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
+
+import 'logIn.dart';
 import 'package:flutter/material.dart';
-
-
+import 'package:animate_do/animate_do.dart';
+import 'package:gymApps/constant/colours.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gymApps/widgets/GymAppsStyle.dart';
+import 'package:gymApps/widgets/GymAppsButton.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:gymApps/View/resetPassword.dart';
+import 'package:gymApps/widgets/GymAppsTextField.dart';
+import 'package:gymApps/view/resetPassword.dart';
 
 class signUpPage extends StatefulWidget {
-  const signUpPage({super.key, required this.title});
-
-  final String title;
+  const signUpPage({super.key});
 
   @override
   State<signUpPage> createState() => _signUpState();
@@ -18,16 +22,19 @@ class _signUpState extends State<signUpPage> {
   late TextEditingController username;
   late TextEditingController email;
   late TextEditingController password;
-  late TextEditingController forgotPassword;
   late UserCredential credential1;
   String _selectedLanguage = 'English';
   late String userEmail;
+  late Size deviceSize;
   final List<String> _languages = [
     'English',
     'Vietnamese',
     'Francais',
     'Deutsch',
   ];
+
+
+  late TextEditingController passwordConfirm;
 
 
   void signUp() async {
@@ -74,29 +81,14 @@ class _signUpState extends State<signUpPage> {
     return 'Validated';
   }
 
-  // void Googlelogin() async {
-  //   late UserCredential credential;
-  //   try {
-  //     if (kIsWeb) {
-  //       credential = await FirebaseAuth.instance.signInWithPopup(authProvider);
-  //     } else {}
-  //
-  //     if (credential.user?.uid != null) {
-  //       print('login successfully');
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
   // tự động chạy khi tạo page này
   @override
   void initState() {
     super.initState();
     username = TextEditingController();
-    // authProvider = GoogleAuthProvider();
     email = TextEditingController();
     password = TextEditingController();
+    passwordConfirm = TextEditingController();
   }
 
   @override
@@ -104,139 +96,144 @@ class _signUpState extends State<signUpPage> {
     username.dispose();
     email.dispose();
     password.dispose();
+    passwordConfirm.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset('lib/assets/icon/barbell.png',
-              height: 40,
-              width: 40,
-            ),
-            SizedBox(width: 10,),
-            Text('Sign up page')
-            ,
-            Spacer(),
-            Container(
-              width: 95,
-              height:20,
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: _selectedLanguage,
-                  icon: Icon(Icons.language),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedLanguage = newValue!;
-                    });
-                  },
-                  items: _languages.map<DropdownMenuItem<String>>((
-                      String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  selectedItemBuilder: (BuildContext context) {
-                    return _languages.map<Widget>((String value) {
-                      return
-                        Text(
-                          _selectedLanguage,
+    deviceSize = MediaQuery.of(context).size; // lấy size của màn hình người dùng
+    const paddingSymmetric = EdgeInsets.symmetric(horizontal: 40);
+    return SafeArea(
+      child: Scaffold(
+        body: LayoutBuilder(builder: (context, constraints) {
+          return Container(
+            color: Colors.white,
+
+            height: constraints.maxHeight,
+            width: deviceSize.width,
+            child: Stack(
+              children: <Widget>[
+                Positioned(
+                  top: deviceSize.height, // Position at the top
+                  left: deviceSize.width, // Position at the left
+                  right: deviceSize.width,
+                  child: FadeInUp(
+                    duration: Duration(milliseconds: 1000),
+                    child: FractionallySizedBox(
+                      widthFactor: 0.8,
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'CrossFit | Register',
                           style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        );
-                    }).toList();
-                  },
+                              // fontSize: 75,
+                              color: LabColors.defaultCyan,
+                              fontFamily: 'Jomhuaria'),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Positioned(
+                  top: 80, // Position at the top
+                  left: 0, // Position at the left
+                  right: 0, child: displayTextFieldsAndButton(constraints),
+                )
+              ],
             ),
-          ],
+          );
+        }),
+        // body: displayTextFieldsAndButton(),
+      ),
+    );
+  }
+
+  Widget displayTextFieldsAndButton(BoxConstraints constraints) {
+    return Column(
+      children: [
+        FadeInTextField(
+          fadeInType: FadeInType.up,
+          duration: Duration(milliseconds: 1200),
+          controller: username,
+          labelText: 'Username',
+          hintText: 'Username for your new account',
+          prefixIcon: Icon(Icons.person_outline),
         ),
-        actions: [
-          //login button
-          IconButton(
+        SizedBox(height: 15),
+        FadeInTextField(
+          fadeInType: FadeInType.up,
+          duration: Duration(milliseconds: 1200),
+          controller: email,
+          labelText: 'Email',
+          hintText: 'Your email used for register new account',
+          prefixIcon: Icon(Icons.email_outlined),
+        ),
+        SizedBox(height: 15),
+        FadeInTextField(
+          fadeInType: FadeInType.up,
+          duration: Duration(milliseconds: 1200),
+          controller: password,
+          labelText: 'Password',
+          hintText: 'Please enter your password',
+          prefixIcon: Icon(Icons.password_outlined),
+        ),
+        SizedBox(height: 15),
+        FadeInTextField(
+          fadeInType: FadeInType.up,
+          duration: Duration(milliseconds: 1200),
+          controller: passwordConfirm,
+          labelText: 'Confirm Password',
+          hintText: 'Please re-enter your password',
+          prefixIcon: Icon(Icons.password_outlined),
+        ),
+        SizedBox(height: 15),
+        FadeInUp(
+            duration: Duration(milliseconds: 1200),
+            child: TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                    logInPage()));
               },
-              icon: Icon(Icons.home))
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Sign up your fitness account',
-              style: TextStyle(
-                fontSize: 32,
-                color: Colors.cyan[400],
+              style: GymAppsStyle.noneEffectButtonStyle,
+              child: Text(
+                "Have An Account Already ? Let's Log In",
+                style: TextStyle(
+                    color: LabColors.defaultCyan,
+                    height: 1,
+                    fontFamily: 'Jomhuaria',
+                    fontSize: 25),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 100, right: 100),
-              child: TextFormField(
-                controller: username,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Username',
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: 100, right: 100),
-              child: TextFormField(
-                controller: email,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Email',
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: 100, right: 100),
-              child: TextFormField(
-                controller: password,
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Password',
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            //login button
-            Container(
-              width: 120,
-              height: 30,
-              child: ElevatedButton(
-                onPressed: signUp, // login
-                child: const Text('Sign up'),
-              ),
-            ),
-            SizedBox(height: 10),
-            Container(
-              width: 120,
-              height: 40,
-              child: ElevatedButton(
-                onPressed: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => resetPage()),
-                  );
-                }, // reset password
-                child: const Text('Forgot password'),
-              ),
-            ),
-          ],
         ),
-      ),
+        SizedBox(height: 25),
+        FadeInUp(
+            duration: Duration(milliseconds: 1200),
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                    resetPasswordPage()));
+              },
+              style: GymAppsStyle.noneEffectButtonStyle,
+              child: Text(
+                "Forgot password ?",
+                style: TextStyle(
+                    color: LabColors.defaultCyan,
+                    height: 1,
+                    fontFamily: 'Jomhuaria',
+                    fontSize: 25),
+              ),
+            )),
+        SizedBox(height: 25),
+        FadeInUp(
+            duration: Duration(milliseconds: 1200),
+            child: GradientButton(
+                onTap: signUp, text: "Sign Up"
+            ),
+        ),
+
+      ],
     );
   }
 }

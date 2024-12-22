@@ -55,9 +55,11 @@ class LabColors {
 
   static const Color switchOFF = Color.fromRGBO(137, 137, 137, 1.0);
 
-  static const Color gradientStart = Color.fromRGBO(107, 36, 170, 1.0);
+  static const Color gradientStart = Color(0xFF6DD5FA);
 
-  static const Color gradientEnd = Color.fromRGBO(172, 38, 136, 1.0);
+  static const Color gradientMid = Color.fromRGBO(126, 181, 251, 1.0);
+
+  static const Color gradientEnd = Color.fromRGBO(143, 148, 251, .6);
 
   static const Color socialFacebook = Color.fromRGBO(59, 89, 152, 1.0);
 

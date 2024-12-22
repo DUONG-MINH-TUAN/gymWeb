@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-class resetPage extends StatefulWidget {
+class resetPasswordPage extends StatefulWidget {
   // final UserCredential credential;
-   const resetPage({super.key});
+   const resetPasswordPage({super.key});
 
   @override
-  State<resetPage> createState() => _resetState();
+  State<resetPasswordPage> createState() => _resetState();
 }
 
-class _resetState extends State<resetPage> {
+class _resetState extends State<resetPasswordPage> {
   late TextEditingController email;
   late String userEmail;
 
