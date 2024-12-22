@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:gymApps/view/signUp.dart';
+import 'package:GymApps/view/signUp.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:gymApps/constant/colours.dart';
+import 'package:GymApps/constant/colours.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:gymApps/widgets/GymAppsStyle.dart';
+import 'package:GymApps/widgets/GymAppsStyle.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:gymApps/widgets/GymAppsPageViewList.dart';
-import 'package:gymApps/widgets/GymAppsTextField.dart';
+import 'package:GymApps/widgets/GymAppsIntroductionScreen.dart';
+import 'package:GymApps/widgets/GymAppsTextField.dart';
 
 
 class logInPage extends StatefulWidget {
@@ -22,8 +22,6 @@ class logInPage extends StatefulWidget {
 class logInPageState extends State<logInPage> {
   late TextEditingController email;
   late TextEditingController password;
-  late FocusNode emailFocusNode;
-  late FocusNode passwordFocusNode;
   late GoogleAuthProvider authProvider;
   PageController? pageController;
   Timer? timer;
@@ -31,8 +29,10 @@ class logInPageState extends State<logInPage> {
   late GlobalKey<IntroductionScreenState> introKey;
 
   int currentPage = 0;
+
   bool passwordVisible = false;
   late List<PageViewModel> pageViewModels; // a list of images for introduction screen
+
 
   // introduction screen general configuration
   PageDecoration pageDecoration = PageDecoration(
@@ -50,8 +50,6 @@ class logInPageState extends State<logInPage> {
     authProvider = GoogleAuthProvider();
     email = TextEditingController();
     password = TextEditingController();
-    emailFocusNode = FocusNode();
-    passwordFocusNode = FocusNode();
     introKey = GlobalKey<IntroductionScreenState>();
   }
 
@@ -64,6 +62,31 @@ class logInPageState extends State<logInPage> {
     return Image.asset('lib/assets/image/$assetName',
         width: width, fit: BoxFit.contain);
   }
+
+  // void initializePageController() {
+  //   pageController = PageController(initialPage: currentPage);
+  //   timer = Timer.periodic(Duration(seconds: 5), (Timer timer) {
+  //     // print(currentPage);
+  //     setState(() {
+  //       currentPage = ++currentPage % pageViewModels.length;
+  //     });
+  //     pageController?.animateToPage(
+  //       currentPage,
+  //       duration: Duration(milliseconds: 300),
+  //       curve: Curves.easeIn,
+  //     );
+  //   });
+  // }
+
+  // void disposePageController() {
+  //   timer?.cancel();
+  //   pageController?.dispose();
+  //   pageController = null;
+  //   print("Timer cancelled");
+  //   print("PageController disposed");
+  // }
+
+
 
   void googleLogin() async {
     late UserCredential userCredential;
@@ -140,18 +163,20 @@ class logInPageState extends State<logInPage> {
 
   @override
   Widget build(BuildContext context) {
+
     deviceSize = MediaQuery.of(context).size; // lấy size của màn hình người dùng
     // lấy dữ liệu từ đối tượng pageViewElements rồi bỏ vào đối tượng mới
     // (được chứa trong file GymAppsPageViewList.dart)
     // Mục đích: lấy tài nguyên để bỏ vào trong introduction screen
-    pageViewModels = pageViewElements
-        .map((item) => PageViewModel(
-              title: item['title']!,
-              bodyWidget: item['body']!,
-              image: buildImage(item['image']),
-              decoration: pageDecoration,
-            ))
-        .toList();
+    // pageViewModels = pageViewElements
+    //     .map((item) => PageViewModel(
+    //           title: item['title']!,
+    //           bodyWidget: item['body']!,
+    //           image: buildImage(item['image']),
+    //           decoration: pageDecoration,
+    //         ))
+    //     .toList();
+
 
     // tạo một trang đăng nhập nằm bên phải cùng
     // dùng widget SafeArea để đảm bảo các phần bên trong bị bao phủ bởi notch
@@ -180,6 +205,7 @@ class logInPageState extends State<logInPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,// căn chỉnh khoảng cách giữa các widget nằm trong row
       children: <Widget>[
         Container(
+
             color: Colors.orangeAccent,
             width: deviceSize.width * 0.7,
             height: deviceSize.height,
@@ -222,6 +248,7 @@ class logInPageState extends State<logInPage> {
                 ),
               ),
             ),
+
         ),
         buildSimpleLogInSection(true)
       ],
@@ -232,7 +259,7 @@ class logInPageState extends State<logInPage> {
     return SingleChildScrollView(
       child: Container(
         color: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.only(left: 25, right: 50),
         height: deviceSize.height,
         width: isLandscape ? deviceSize.width * 0.299 : deviceSize.width,
         child: Column(
@@ -252,23 +279,15 @@ class logInPageState extends State<logInPage> {
         hintText: 'What is your registered email ?',
         prefixIcon: Icon(Icons.help_outline),
       ),
-      SizedBox(height: 25),
+      SizedBox(height: 15),
       ObscureFadeInTextField(
         fadeInType: FadeInType.up,
-        duration: Duration(milliseconds: 1600),
+        duration: Duration(milliseconds: 1400),
         controller: password,
-        obscureText: passwordVisible,
+        initialObscureText: true,
         labelText: 'Password',
         hintText: 'Your password',
         prefixIcon: Icon(Icons.lock_outline),
-        suffixIcon: IconButton(
-            icon:
-                Icon(passwordVisible ? Icons.visibility : Icons.visibility_off),
-            onPressed: () {
-              setState(() {
-                passwordVisible = !passwordVisible;
-              });
-            }),
       ),
       SizedBox(height: 15),
       FadeInUp(
@@ -284,8 +303,7 @@ class logInPageState extends State<logInPage> {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => signUpPage()));
+                Navigator.pushNamed(context, '/home');
               },
               child: Text(
                 "New User ? Let's Sign Up",
@@ -315,7 +333,7 @@ class logInPageState extends State<logInPage> {
       //login button
       SizedBox(height: 30),
       FadeInUp(
-        duration: Duration(milliseconds: 2200),
+        duration: Duration(milliseconds: 2000),
         child: InkWell(
           onTap: logIn,
           child: Container(
@@ -342,7 +360,7 @@ class logInPageState extends State<logInPage> {
 
   Widget FadeInSocialLogInButtons() {
     return FadeInUp(
-      duration: Duration(milliseconds: 2000),
+      duration: Duration(milliseconds: 2200),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

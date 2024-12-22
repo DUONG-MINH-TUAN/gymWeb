@@ -1,15 +1,17 @@
-
-
 import 'logIn.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:gymApps/constant/colours.dart';
+import 'package:GymApps/constant/colours.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gymApps/widgets/GymAppsStyle.dart';
-import 'package:gymApps/widgets/GymAppsButton.dart';
+import 'package:GymApps/widgets/GymAppsStyle.dart';
+import 'package:GymApps/widgets/GymAppsButton.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:gymApps/widgets/GymAppsTextField.dart';
-import 'package:gymApps/view/resetPassword.dart';
+
+// import 'package:gymApps/widgets/GymAppsTextField.dart';
+import 'package:GymApps/view/resetPassword.dart';
+import 'package:GymApps/widgets/GymAppsTextField.dart';
+import 'package:GymApps/widgets/GymAppsIntroductionScreen.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 
 class signUpPage extends StatefulWidget {
   const signUpPage({super.key});
@@ -22,6 +24,7 @@ class _signUpState extends State<signUpPage> {
   late TextEditingController username;
   late TextEditingController email;
   late TextEditingController password;
+
   late UserCredential credential1;
   String _selectedLanguage = 'English';
   late String userEmail;
@@ -33,23 +36,33 @@ class _signUpState extends State<signUpPage> {
     'Deutsch',
   ];
 
-
   late TextEditingController passwordConfirm;
+  late PageController pageController;
+  late GlobalKey<IntroductionScreenState> introKey;
+  late List<PageViewModel> pageViewModels;
 
+  PageDecoration pageDecoration = PageDecoration(
+    titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
+    titlePadding: EdgeInsets.only(top: 8.0, bottom: 12.0),
+    bodyTextStyle: TextStyle(fontSize: 19.0),
+    bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+    pageColor: Colors.white,
+    imagePadding: EdgeInsets.zero,
+  );
 
   void signUp() async {
     var isValidated = validateInput(username.text, email.text, password.text);
     // thiếu phần username
     bool isError = false;
     if (isValidated == 'Validated') {
-
       try {
-         credential1 = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        final credential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.text,
           password: password.text,
         );
-         credential1.user?.sendEmailVerification();
-         userEmail = credential1.user?.email ?? "";
+        credential1.user?.sendEmailVerification();
+        userEmail = credential1.user?.email ?? "";
         print("Successful login");
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
@@ -60,9 +73,8 @@ class _signUpState extends State<signUpPage> {
       } catch (e) {
         print(e);
       }
-
-  }
-    else print(isValidated);
+    } else
+      print(isValidated);
   }
 
   String validateInput(String username, String email, String password) {
@@ -89,6 +101,7 @@ class _signUpState extends State<signUpPage> {
     email = TextEditingController();
     password = TextEditingController();
     passwordConfirm = TextEditingController();
+    introKey = GlobalKey<IntroductionScreenState>();
   }
 
   @override
@@ -102,56 +115,130 @@ class _signUpState extends State<signUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    deviceSize = MediaQuery.of(context).size; // lấy size của màn hình người dùng
+    deviceSize =
+        MediaQuery.of(context).size; // lấy size của màn hình người dùng
     const paddingSymmetric = EdgeInsets.symmetric(horizontal: 40);
     return SafeArea(
       child: Scaffold(
-        body: LayoutBuilder(builder: (context, constraints) {
-          return Container(
-            color: Colors.white,
-
-            height: constraints.maxHeight,
-            width: deviceSize.width,
-            child: Stack(
-              children: <Widget>[
-                Positioned(
-                  top: deviceSize.height, // Position at the top
-                  left: deviceSize.width, // Position at the left
-                  right: deviceSize.width,
-                  child: FadeInUp(
-                    duration: Duration(milliseconds: 1000),
-                    child: FractionallySizedBox(
-                      widthFactor: 0.8,
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        alignment: Alignment.center,
-                        child: Text(
-                          'CrossFit | Register',
-                          style: TextStyle(
-                              // fontSize: 75,
-                              color: LabColors.defaultCyan,
-                              fontFamily: 'Jomhuaria'),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            return Container(
+              color: Colors.white,
+              height: constraints.maxHeight,
+              width: deviceSize.width,
+              child: Stack(
+                children: <Widget>[
+                  Positioned(
+                    top: deviceSize.height, // Position at the top
+                    left: deviceSize.width, // Position at the left
+                    right: deviceSize.width,
+                    child: FadeInUp(
+                      duration: Duration(milliseconds: 1000),
+                      child: FractionallySizedBox(
+                        widthFactor: 0.8,
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          alignment: Alignment.center,
+                          child: Text(
+                            'CrossFit | Register',
+                            style: TextStyle(
+                                // fontSize: 75,
+                                color: LabColors.defaultCyan,
+                                fontFamily: 'Jomhuaria'),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Positioned(
-                  top: 80, // Position at the top
-                  left: 0, // Position at the left
-                  right: 0, child: displayTextFieldsAndButton(constraints),
-                )
-              ],
-            ),
-          );
-        }),
-        // body: displayTextFieldsAndButton(),
+                  Positioned(
+                    top: 80, // Position at the top
+                    left: 0, // Position at the left
+                    right: 0, child: displayTextFieldsAndButton(),
+                  )
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+
+  }
+
+  Widget buildSignUpSectionWithSlider() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Container(
+          color: Colors.orangeAccent,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.height,
+          child: GymAppsIntroductionScreen(introKey: introKey),
+        ),
+        buildSimpleSignUpSection(true)
+      ],
+    );
+  }
+
+  Widget buildSimpleSignUpSection(bool isLandscape) {
+    return SingleChildScrollView(
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.only(left: 25, right: 50),
+        height: deviceSize.height,
+        width: isLandscape ? deviceSize.width * 0.299 : deviceSize.width,
+        child: Column(
+          children: <Widget>[displayRichTitle(), displayTextFieldsAndButton()],
+        ),
       ),
     );
   }
 
-  Widget displayTextFieldsAndButton(BoxConstraints constraints) {
+  Widget displayRichTitle() {
+    const fontWeight = FontWeight.w400;
+    return FadeInUp(
+      duration: Duration(milliseconds: 1000),
+      child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.only(top: 20, bottom: 30),
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.center,
+            child: RichText(
+                text: TextSpan(children: [
+              TextSpan(
+                  text: "Crossfit ",
+                  style: TextStyle(
+                    color: LabColors.gradientStart,
+                    fontFamily: 'Oswald',
+                    fontWeight: fontWeight,
+                  )),
+              TextSpan(
+                text: "|",
+                style: TextStyle(
+                    color: LabColors.gradientMid,
+                    fontFamily: 'Oswald',
+                    fontWeight: fontWeight),
+              ),
+              TextSpan(
+                  text: " Register",
+                  style: TextStyle(
+                      color: LabColors.gradientEnd,
+                      fontFamily: 'Oswald',
+                      fontWeight: fontWeight))
+            ])),
+          )),
+    );
+  }
+
+  Widget buildImage(String assetName, [double width = 420]) {
+    return Image.asset('lib/assets/image/$assetName',
+        width: width, fit: BoxFit.contain);
+  }
+
+  Widget displayTextFieldsAndButton() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         FadeInTextField(
           fadeInType: FadeInType.up,
@@ -171,10 +258,11 @@ class _signUpState extends State<signUpPage> {
           prefixIcon: Icon(Icons.email_outlined),
         ),
         SizedBox(height: 15),
-        FadeInTextField(
+        ObscureFadeInTextField(
           fadeInType: FadeInType.up,
           duration: Duration(milliseconds: 1200),
           controller: password,
+          initialObscureText: true,
           labelText: 'Password',
           hintText: 'Please enter your password',
           prefixIcon: Icon(Icons.password_outlined),
@@ -186,34 +274,36 @@ class _signUpState extends State<signUpPage> {
           controller: passwordConfirm,
           labelText: 'Confirm Password',
           hintText: 'Please re-enter your password',
-          prefixIcon: Icon(Icons.password_outlined),
+          prefixIcon: Icon(Icons.lock_outline),
         ),
-        SizedBox(height: 15),
+        SizedBox(height: 25),
         FadeInUp(
-            duration: Duration(milliseconds: 1200),
-            child: TextButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    logInPage()));
-              },
-              style: GymAppsStyle.noneEffectButtonStyle,
-              child: Text(
-                "Have An Account Already ? Let's Log In",
-                style: TextStyle(
-                    color: LabColors.defaultCyan,
-                    height: 1,
-                    fontFamily: 'Jomhuaria',
-                    fontSize: 25),
-              ),
+          duration: Duration(milliseconds: 1200),
+          child: TextButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => logInPage()));
+            },
+            style: GymAppsStyle.noneEffectButtonStyle,
+            child: Text(
+              "Have An Account Already ? Let's Log In",
+              style: TextStyle(
+                  color: LabColors.defaultCyan,
+                  height: 1,
+                  fontFamily: 'Jomhuaria',
+                  fontSize: 25),
             ),
+          ),
         ),
         SizedBox(height: 25),
         FadeInUp(
             duration: Duration(milliseconds: 1200),
             child: TextButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    resetPasswordPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => resetPasswordPage()));
               },
               style: GymAppsStyle.noneEffectButtonStyle,
               child: Text(
@@ -225,14 +315,13 @@ class _signUpState extends State<signUpPage> {
                     fontSize: 25),
               ),
             )),
-        SizedBox(height: 25),
-        FadeInUp(
-            duration: Duration(milliseconds: 1200),
-            child: GradientButton(
-                onTap: signUp, text: "Sign Up"
-            ),
+        SizedBox(
+          height: 25,
         ),
-
+        FadeInUp(
+          duration: Duration(milliseconds: 2150),
+          child: GradientButton(onTap: signUp, text: "Sign Up"),
+        ),
       ],
     );
   }

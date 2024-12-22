@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymApps/main.dart';
+// import 'package:gymApps/main.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {

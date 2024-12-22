@@ -51,7 +51,6 @@ class FadeInTextFieldState extends State<FadeInTextField> {
 
   @override
   Widget build(BuildContext context) {
-
     Widget textField = TextField(
       controller: widget.controller,
       focusNode: widget.focusNode,
@@ -60,15 +59,18 @@ class FadeInTextFieldState extends State<FadeInTextField> {
             borderSide: BorderSide(color: Colors.black), // Default border color
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: LabColors.defaultCyan,width: 2), // Border color when focused
+            borderSide: BorderSide(
+                color: LabColors.defaultCyan,
+                width: 2), // Border color when focused
           ),
           isDense: false,
           hintText: widget.hintText ?? widget.labelText,
           labelText: widget.labelText,
           prefixIcon: widget.prefixIcon,
           labelStyle: TextStyle(
-              color: widget.focusNode.hasFocus ? LabColors.defaultCyan : Colors.black)
-      ),
+              color: widget.focusNode.hasFocus
+                  ? LabColors.defaultCyan
+                  : Colors.black)),
     );
 
     switch (widget.fadeInType) {
@@ -87,7 +89,8 @@ class FadeInTextFieldState extends State<FadeInTextField> {
 }
 
 class ObscureFadeInTextField extends FadeInTextField {
-  final bool obscureText;
+  final bool initialObscureText;
+
   ObscureFadeInTextField({
     super.key,
     required FadeInType fadeInType,
@@ -95,27 +98,30 @@ class ObscureFadeInTextField extends FadeInTextField {
     Duration duration = const Duration(seconds: 1),
     String? hintText,
     Widget? prefixIcon = const Icon(Icons.help_outline),
-    Widget? suffixIcon = const Icon(Icons.help_outline),
+    Widget? suffixIcon,
     required String labelText,
-    this.obscureText = false,
+    this.initialObscureText = false,
   }) : super(
-    fadeInType: fadeInType,
-    controller: controller,
-    duration: duration,
-    hintText: hintText,
-    prefixIcon: prefixIcon,
-    suffixIcon: suffixIcon,
-    labelText: labelText,
-  );
+          fadeInType: fadeInType,
+          controller: controller,
+          duration: duration,
+          hintText: hintText,
+          prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
+          labelText: labelText,
+        );
 
   @override
   State<ObscureFadeInTextField> createState() => ObscureFadeInTextFieldState();
 }
 
 class ObscureFadeInTextFieldState extends State<ObscureFadeInTextField> {
+  late bool obscureText;
+
   @override
   void initState() {
     super.initState();
+    obscureText = widget.initialObscureText;
     widget.focusNode.addListener(_onFocusChange);
   }
 
@@ -129,26 +135,38 @@ class ObscureFadeInTextFieldState extends State<ObscureFadeInTextField> {
   void _onFocusChange() {
     setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
     Widget textField = TextField(
       controller: widget.controller,
-        focusNode: widget.focusNode,
-      obscureText: widget.obscureText,
+      focusNode: widget.focusNode,
+      obscureText: obscureText,
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black), // Default border color
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: LabColors.defaultCyan,width: 2), // Border color when focused
+            borderSide: BorderSide(
+                color: LabColors.defaultCyan,
+                width: 2), // Border color when focused
           ),
           isDense: false,
           hintText: widget.hintText ?? widget.labelText,
           labelText: widget.labelText,
           prefixIcon: widget.prefixIcon,
-          suffixIcon: widget.suffixIcon,
-        labelStyle: TextStyle(
-            color: widget.focusNode.hasFocus ? LabColors.defaultCyan : Colors.black))
+          suffixIcon: IconButton(
+            icon: Icon(obscureText ? Icons.visibility : Icons.visibility_off),
+            onPressed: () {
+              setState(() {
+                obscureText = !obscureText;
+              });
+            },
+          ),
+          labelStyle: TextStyle(
+              color: widget.focusNode.hasFocus
+                  ? LabColors.defaultCyan
+                  : Colors.black)),
     );
 
     switch (widget.fadeInType) {

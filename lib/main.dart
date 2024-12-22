@@ -2,17 +2,26 @@ import 'constant/colours.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymApps/view/logIn.dart';
-import 'package:gymApps/view/signUp.dart';
-import 'package:gymApps/view/HomePage.dart';
+
+import 'package:GymApps/view/logIn.dart';
+import 'package:GymApps/view/signUp.dart';
+import 'package:GymApps/view/HomePage.dart';
+
+// import 'package:GymApps/view/logIn.dart';
+// import 'package:GymApps/view/signUp.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Color.fromRGBO(126, 181, 251, 1.0)));
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.portraitUp
+  ]);
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -75,7 +84,7 @@ class HomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => HomeApp()),
+                    MaterialPageRoute(builder: (context) => HomePage()),
                   );
                 },
                 icon: Icon(Icons.home)),
